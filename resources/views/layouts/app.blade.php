@@ -41,18 +41,24 @@
                     Inventory
                 </p>
 
-                <a href="{{ route('items.index') }}"
-                   class="group flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-all duration-200
-                          {{ request()->routeIs('items.*')
-                              ? 'bg-white/10 text-white shadow-inner shadow-white/5 ring-1 ring-white/10'
-                              : 'text-slate-400 hover:bg-sidebar-hover hover:text-white' }}">
-                    <svg class="h-[18px] w-[18px] shrink-0 {{ request()->routeIs('items.*') ? 'text-brand-100' : 'text-slate-500 group-hover:text-brand-100' }}" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 6.75h12M8.25 12h12m-12 5.25h12M3.75 6.75h.007v.008H3.75V6.75Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0ZM3.75 12h.007v.008H3.75V12Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm-.375 5.25h.007v.008H3.75v-.008Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z" />
-                    </svg>
-                    Assets List
-                </a>
+              @if(auth()->user()->role === 'Admin')
+    <a href="{{ route('items.index') }}"
+       class="group flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-all duration-200
+              {{ request()->routeIs('items.*')
+                  ? 'bg-white/10 text-white shadow-inner shadow-white/5 ring-1 ring-white/10'
+                  : 'text-slate-400 hover:bg-sidebar-hover hover:text-white' }}">
 
-                <a href="#"
+        <svg class="h-[18px] w-[18px] shrink-0 {{ request()->routeIs('items.*') ? 'text-brand-100' : 'text-slate-500 group-hover:text-brand-100' }}"
+             fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round"
+                  d="M8.25 6.75h12M8.25 12h12m-12 5.25h12M3.75 6.75h.007v.008H3.75V6.75Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0ZM3.75 12h.007v.008H3.75V12Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm-.375 5.25h.007v.008H3.75v-.008Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z" />
+        </svg>
+
+        Assets List
+    </a>
+@endif
+
+                <a href="{{ route('assigned-assets') }}"
                    class="group flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium text-slate-400 transition-all duration-200 hover:bg-sidebar-hover hover:text-white">
                     <svg class="h-[18px] w-[18px] shrink-0 text-slate-500 group-hover:text-brand-100" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M15 19.128a9.38 9.38 0 0 0 2.625.372 9.337 9.337 0 0 0 4.121-.952 4.125 4.125 0 0 0-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 0 1 8.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0 1 11.964-3.07M12 6.375a3.375 3.375 0 1 1-6.75 0 3.375 3.375 0 0 1 6.75 0Zm8.25 2.25a2.625 2.625 0 1 1-5.25 0 2.625 2.625 0 0 1 5.25 0Z" />
@@ -105,19 +111,83 @@
             <!-- User Section -->
             <div class="border-t border-sidebar-border p-4">
 
-                <div class="mb-4 flex items-center gap-3 rounded-xl bg-sidebar-hover p-3 ring-1 ring-white/5">
-                    <div class="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-brand-500 to-brand-700 text-sm font-semibold text-white">
-                        {{ strtoupper(substr(auth()->user()->name ?? 'A', 0, 1)) }}
-                    </div>
-                    <div class="min-w-0">
-                        <p class="truncate text-sm font-semibold text-white">
-                            {{ auth()->user()->name ?? 'Administrator' }}
-                        </p>
-                        <p class="truncate text-xs text-slate-400">
-                            {{ auth()->user()->role ?? 'User' }}
-                        </p>
-                    </div>
+              <div x-data="{ open: false }" class="relative">
+
+    <button
+        @click="open = !open"
+        class="w-full"
+    >
+        <div class="mb-4 flex items-center gap-3 rounded-xl bg-sidebar-hover p-3 ring-1 ring-white/5 hover:bg-slate-700 transition">
+            <div class="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-brand-500 to-brand-700 text-sm font-semibold text-white">
+                {{ strtoupper(substr(auth()->user()->name ?? 'A', 0, 1)) }}
+            </div>
+
+            <div class="min-w-0 flex-1 text-left">
+                <p class="truncate text-sm font-semibold text-white">
+                    {{ auth()->user()->name ?? 'Administrator' }}
+                </p>
+
+                <p class="truncate text-xs text-slate-400">
+                    {{ auth()->user()->role ?? 'User' }}
+                </p>
+            </div>
+
+            <svg class="h-4 w-4 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M19 9l-7 7-7-7"/>
+            </svg>
+        </div>
+    </button>
+
+    <!-- Dropdown -->
+    <div
+        x-show="open"
+        @click.away="open = false"
+        x-transition
+        class="absolute bottom-full left-0 mb-2 w-full rounded-xl bg-white shadow-xl border border-slate-200 z-50"
+    >
+        <div class="p-4">
+
+            <h3 class="font-semibold text-slate-800">
+                User Information
+            </h3>
+
+            <div class="mt-3 space-y-3 text-sm">
+
+                <div>
+                    <p class="text-slate-400">Name</p>
+                    <p class="font-medium text-slate-800">
+                        {{ auth()->user()->name }}
+                    </p>
                 </div>
+
+                <div>
+                    <p class="text-slate-400">Email</p>
+                    <p class="font-medium text-slate-800">
+                        {{ auth()->user()->email }}
+                    </p>
+                </div>
+
+                <div>
+                    <p class="text-slate-400">Role</p>
+                    <p class="font-medium text-slate-800">
+                        {{ auth()->user()->role }}
+                    </p>
+                </div>
+
+                <div>
+                    <p class="text-slate-400">Member Since</p>
+                    <p class="font-medium text-slate-800">
+                        {{ auth()->user()->created_at->format('M d, Y') }}
+                    </p>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+
+</div>
 
                 <form method="POST" action="{{ route('logout') }}">
                     @csrf

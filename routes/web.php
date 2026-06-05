@@ -10,6 +10,8 @@ use App\Livewire\UserManagement\UserList;
 use App\Livewire\UserManagement\Branches;
 use App\Livewire\UserManagement\EditUser;
 use App\Livewire\Items\EditItem;
+use App\Livewire\Items\AssignedUserItem;
+
 
 
 
@@ -24,6 +26,11 @@ Route::middleware('auth')->group(function () {
     ->name('items.edit');
 });
 
+
+Route::get('/assigned-assets', AssignedUserItem::class)
+    ->name('assigned-assets');
+
+    
 Route::middleware(['auth'])->group(function () {
 
     Route::get('/users', UserList::class)
